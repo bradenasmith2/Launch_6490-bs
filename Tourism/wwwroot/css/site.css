@@ -16,3 +16,35 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+h2 {
+    padding-bottom: 40px;
+}
+
+input {
+    display: flex;
+    flex-direction: column;
+    /*    padding-bottom: 5px;*/
+    border: solid;
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+label {
+    padding-top: 10px;
+    font-size: 28px;
+}
+
+button {
+    color: white;
+    background-color: green;
+    border: solid;
+    border-radius: 40px;
+    padding-right: 25px;
+    padding-left: 25px;
+    font-size: 22px;
+}
+
+    button:hover {
+        background-color: lightgreen;
+    }

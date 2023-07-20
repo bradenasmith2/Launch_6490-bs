@@ -5,6 +5,7 @@ using Tourism.Models;
 
 namespace Tourism.FeatureTests
 {
+    [Collection("States Controller Tests")]
     public class StateCRUDTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
@@ -61,6 +62,41 @@ namespace Tourism.FeatureTests
             context.Database.EnsureCreated();
 
             return context;
+        }
+
+        [Fact]
+        public async Task New_ReturnsNewStateForm()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/states/new");
+            var html = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+            Assert.Contains("<form id=\"new-state-form\" method=\"post\" action=\"/states\">", html);
+            Assert.Contains("state-abbreviation", html);
+            Assert.Contains("state-name", html);
+            Assert.Contains("<button type=\"submit\">Submit</button>", html);
+        }
+
+        [Fact]
+        public async Task Create_AddsStateToDbAndRedirects()
+        {
+            var client = _factory.CreateClient();
+
+            var addStateFormData = new Dictionary<string, string>
+            {
+                { "Name", "Illinois" },
+                { "Abbreviation", "IL" }
+            };
+
+            var response = await client.PostAsync("/states", new FormUrlEncodedContent(addStateFormData));
+            var html = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+            Assert.Contains("IL", html);
+            Assert.Contains("Illinois", html);
+            Assert.DoesNotContain("Michigan", html);
         }
     }
 }

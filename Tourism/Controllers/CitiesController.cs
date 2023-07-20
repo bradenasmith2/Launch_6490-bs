@@ -25,22 +25,24 @@ namespace Tourism.Controllers
             return View(state);
         }
 
-        public IActionResult New()
+        [Route("/states/{stateId:int}/cities/new")]
+        public IActionResult New(int stateId)
         {
-            var state = _context.States;
+            var state = _context.States.Where(e => e.Id == stateId).Include(e => e.Cities).Single();
 
             return View(state);
         }
 
-        //[Route("/states/{stateId:int}/cities")]
-        //public IActionResult Create(int stateId, City city)
-        //{
-        //    var city = _context.Cities.Find(stateId);
+        [HttpPost]
+        [Route("/states/{stateId:int}/cities")]
+        public IActionResult Create(int stateId, City city)
+        {
+            var state = _context.States.Where(e => e.Id == stateId).Include(e => e.Cities).Single();
 
-        //    _context.Add(city);
-        //    _context.SaveChanges();
+            state.Cities.Add(city);
+            _context.SaveChanges();
 
-        //    return RedirectToAction();
-        //}
+            return Redirect($"/states/{stateId}/cities");
+        }
     }
 }
